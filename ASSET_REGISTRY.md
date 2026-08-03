@@ -126,3 +126,12 @@ Generated from the asset filenames. `copies` is the number of physical copies in
 | `nk.wood_cars` | `assets/cards/nk/wood_cars.webp` | 1 |
 
 **Inventory check:** 10 North Korea fronts, one copy each.
+
+## Card-back templates
+
+| ID | Asset | Size |
+|---|---|---:|
+| `back.neutral` | `assets/back.png` | 1049×1500 |
+| `back.yellow` | `assets/back_yellow.png` | 1049×1500 |
+
+These are reusable language-neutral backgrounds. See `CARD_BACKS.md` for overlay and secrecy rules.

@@ -5,7 +5,7 @@ Inventory captured from `assets/cards` on 2026-08-03. Counts include every file 
 | Deck directory | Files | PDF count | Review |
 |---|---:|---:|---|
 | `fractions` | 14 | 14 | matches |
-| `characters` | 37 files / 36 fronts | 36 | now matches the 36-card photo inventory; `back.webp` is the extra file |
+| `characters` | 37 files / 36 fronts | 36 | now matches the 36-card photo inventory; `back.webp` is the back-side graphic |
 | `items` | 50 files / 49 fronts | 63 physical upgrades | now reconciled: 49 unique fronts, with filename copy counts summing to 63; `back.webp` is the extra file |
 | `capital` | 25 | 25 | matches |
 | `connections` | 21 | 21 | matches |
