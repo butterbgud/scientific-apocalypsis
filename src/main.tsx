@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowRight, BookOpen, Coins, Crown, Dices, FlaskConical, Globe2, HeartPulse, Users } from "lucide-react";
-import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, setup, type GameState } from "./engine";
+import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, runBotTurn, setup, type GameState } from "./engine";
 import "./styles.css";
 
 type Screen = "lobby" | "board";
@@ -91,8 +91,10 @@ function App() {
     if ("error" in assigned) return setNotice(assigned.error);
     const resolved = resolveTask(assigned.state, selectedTask);
     if ("error" in resolved) return setNotice(resolved.error);
-    setGame(resolved.state);
-    setNotice(resolved.events[0].message);
+    const botTurn = runBotTurn(resolved.state);
+    if ("error" in botTurn) return setNotice(botTurn.error);
+    setGame(botTurn.state);
+    setNotice(`${resolved.events[0].message} Бот завершил свой ход.`);
     setSelectedTask(null);
   }
 

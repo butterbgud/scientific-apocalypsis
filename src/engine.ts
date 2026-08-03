@@ -132,6 +132,24 @@ export function resolveTask(state: GameState, taskId: string, roll?: number): Re
   return result({ ...state, seed: random.seed(), phase: "actions", players: state.players.map((candidate) => candidate.id === player.id ? nextPlayer : candidate), tracks, assignments: state.assignments.filter((candidate) => candidate.taskId !== taskId), taskChoices: state.taskChoices.filter((id) => id !== taskId) }, events);
 }
 
+export function runBotTurn(state: GameState): Result {
+  const bot = state.players.find((player) => player.id === "player.1");
+  if (!bot) return fail("Bot player is missing.");
+  const taskId = state.taskChoices.find((id) => {
+    const task = state.tasks[id];
+    const resource: Resource = task.deck === "capital" ? "capital" : task.deck === "connections" ? "connections" : "authority";
+    return bot.resources[resource] >= task.cost;
+  });
+  const region = Object.values(state.regions).find((candidate) => candidate.assignments.length < candidate.capacity);
+  if (!taskId || !region) return result({ ...state, currentPlayerId: "player.0", phase: "actions" }, [{ type: "bot_pass", message: "Bot has no legal task this turn." }]);
+  const agentId = bot.agents[0];
+  const assigned = assignTask({ ...state, currentPlayerId: "player.1" }, taskId, agentId, region.id);
+  if ("error" in assigned) return result({ ...state, currentPlayerId: "player.0", phase: "actions" }, [{ type: "bot_pass", message: `Bot passed: ${assigned.error}` }]);
+  const resolved = resolveTask(assigned.state, taskId);
+  if ("error" in resolved) return resolved;
+  return result({ ...resolved.state, currentPlayerId: "player.0", phase: "actions" }, [{ type: "bot_turn", message: "Bot completed its task." }]);
+}
+
 export function getOutcome(state: GameState): GameState["outcome"] {
   if (state.tracks.enlightenment >= 12) return "victory";
   if (state.players.some((player) => player.resources.capital < 0 || player.resources.connections < 0)) return "loss";
