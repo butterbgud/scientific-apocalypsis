@@ -2,6 +2,17 @@ import { useMemo, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowRight, BookOpen, Coins, Crown, Dices, FlaskConical, Globe2, HeartPulse, Users } from "lucide-react";
 import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, runBotTurn, setup, startNextRound, type GameState } from "./engine";
+import lobbyImage from "../assets/lobby.webp";
+import flamenkoImage from "../assets/cards/characters/flamenko.webp";
+import okruzhnyyImage from "../assets/cards/characters/okruzhnyy.webp";
+import pf1Image from "../assets/pf1.webp";
+import pf2Image from "../assets/pf2.webp";
+import pf3Image from "../assets/pf3.webp";
+import pf4Image from "../assets/pf4.webp";
+import microwaveImage from "../assets/cards/capital/microwave.webp";
+import flatEarthImage from "../assets/cards/connections/flat_earth.webp";
+import missionImage from "../assets/cards/missions/5g_towers.webp";
+import herbsImage from "../assets/cards/capital/herbs.webp";
 import "./styles.css";
 
 type Screen = "lobby" | "board";
@@ -28,19 +39,25 @@ const agents: Agent[] = [
     className: "Целитель",
     characteristic: "Харизма",
     ability: "При помощи даёт основному агенту +1 к проверке.",
-    image: "/assets/cards/characters/flamenko.webp",
+    image: flamenkoImage,
   },
   {
     name: "Александр Редиска",
     className: "Предсказатель",
     characteristic: "Психопатия",
     ability: "Один раз за раунд может изменить результат проверки.",
-    image: "/assets/cards/characters/alexander_r.webp",
+    image: okruzhnyyImage,
   },
 ];
 
 const botName = "Александр Окружной";
-const botImage = "/assets/cards/characters/okruzhnyy.webp";
+const botImage = okruzhnyyImage;
+const taskImages: Record<string, string> = {
+  "task.capital.microwave": microwaveImage,
+  "task.connections.flat-earth": flatEarthImage,
+  "task.mission.digital-religion": missionImage,
+  "task.capital.herbs": herbsImage,
+};
 
 const initialRegions: Region[] = [
   { name: "Англосаксония", bonus: "+1 Расследователь", task: null, agent: null },
@@ -118,7 +135,7 @@ function App() {
 
   if (screen === "lobby") {
     return (
-      <main className="lobby-shell">
+      <main className="lobby-shell" style={{ backgroundImage: `linear-gradient(135deg, rgba(17,20,24,.78), rgba(36,34,24,.82)), url(${lobbyImage})` }}>
         <section className="lobby-card">
           <div className="eyebrow"><FlaskConical size={16} /> SCIENCE APOCALYPSE</div>
           <h1>Apocalypsis</h1>
@@ -147,6 +164,18 @@ function App() {
         <Track icon={<FlaskConical size={16} />} label="Естественно-научный" value={"natural_progress" in tracks ? tracks.natural_progress : tracks.natural} max={13} tone="natural" />
         <Track icon={<Dices size={16} />} label="Технический" value={"technical_progress" in tracks ? tracks.technical_progress : tracks.technical} max={13} tone="technical" />
       </section>
+      <section className="playfield-shell" aria-label="Original game field">
+        <div className="playfield-grid">
+          <img src={pf1Image} alt="Korea area" /><img src={pf2Image} alt="Vatican deck area" />
+          <img src={pf4Image} alt="World cards area" /><img src={pf3Image} alt="Crown area" />
+        </div>
+        <div className="field-trackers">
+          <span>Просветление <b>{tracks.enlightenment}</b></span>
+          <span>Социальный <b>{"social_progress" in tracks ? tracks.social_progress : tracks.social}</b></span>
+          <span>Естественно-научный <b>{"natural_progress" in tracks ? tracks.natural_progress : tracks.natural}</b></span>
+          <span>Технический <b>{"technical_progress" in tracks ? tracks.technical_progress : tracks.technical}</b></span>
+        </div>
+      </section>
       <div className="board-layout">
         <aside className="side-panel player-panel">
           <div className="panel-heading"><span>Ваша фракция</span><Crown size={17} /></div>
@@ -162,7 +191,7 @@ function App() {
           <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 2 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
           <div className="history-panel"><div className="history-heading"><span className="eyebrow">ИСТОРИЯ РАЗРЕШЕНИЯ</span><span>{game?.history.length ?? 0} событий</span></div>{(game?.history ?? []).slice(-5).reverse().map((event, index) => <div className="history-event" key={`${event.type}-${index}`}><span className="history-dot" /><div><strong>{event.message}</strong>{event.data?.dice ? <small>Кубик: {String(event.data.dice)} · Результат: {String(event.data.score)} / {String(event.data.difficulty)}</small> : null}</div></div>)}</div>
         </section>
-        <aside className="side-panel task-panel"><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task) => <button key={task.id} className={`task-card ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setSelectedTask(task.id)}><img className="task-image" src={task.image} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Выберите карту, затем регион</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
+        <aside className="side-panel task-panel"><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task) => <button key={task.id} className={`task-card ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setSelectedTask(task.id)}><img className="task-image" src={taskImages[task.id]} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Выберите карту, затем регион</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
       </div>
     </main>
   );

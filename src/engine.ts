@@ -49,10 +49,10 @@ export type GameState = {
 export type Result<T = GameState> = { state: T; events: Event[] } | { error: string };
 
 const fixtureTasks: TaskCard[] = [
-  { id: "task.capital.microwave", title: "Карта капитала", image: "/assets/cards/capital/microwave.webp", deck: "capital", cost: 1, characteristic: "psychopathy", difficulty: 3, reward: { capital: 2 }, trackReward: { enlightenment: 1 } },
-  { id: "task.connections.flat-earth", title: "Карта связей", image: "/assets/cards/connections/flat_earth.webp", deck: "connections", cost: 1, characteristic: "charisma", difficulty: 3, reward: { connections: 2 }, trackReward: { social_progress: 1 } },
-  { id: "task.mission.digital-religion", title: "Карта миссии", image: "/assets/cards/missions/5g_towers.webp", deck: "mission", cost: 2, characteristic: "machiavellianism", difficulty: 4, reward: { authority: 1 }, trackReward: { technical_progress: 1 } },
-  { id: "task.capital.herbs", title: "Карта капитала", image: "/assets/cards/capital/herbs.webp", deck: "capital", cost: 1, characteristic: "intelligence", difficulty: 2, reward: { capital: 1 }, trackReward: { natural_progress: 1 } },
+  { id: "task.capital.microwave", title: "Карта капитала", image: "capital/microwave.webp", deck: "capital", cost: 1, characteristic: "psychopathy", difficulty: 3, reward: { capital: 2 }, trackReward: { enlightenment: 1 } },
+  { id: "task.connections.flat-earth", title: "Карта связей", image: "connections/flat_earth.webp", deck: "connections", cost: 1, characteristic: "charisma", difficulty: 3, reward: { connections: 2 }, trackReward: { social_progress: 1 } },
+  { id: "task.mission.digital-religion", title: "Карта миссии", image: "missions/5g_towers.webp", deck: "mission", cost: 2, characteristic: "machiavellianism", difficulty: 4, reward: { authority: 1 }, trackReward: { technical_progress: 1 } },
+  { id: "task.capital.herbs", title: "Карта капитала", image: "capital/herbs.webp", deck: "capital", cost: 1, characteristic: "intelligence", difficulty: 2, reward: { capital: 1 }, trackReward: { natural_progress: 1 } },
 ];
 
 const starterAgent: Omit<Agent, "ownerId"> = {
