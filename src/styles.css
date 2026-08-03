@@ -31,7 +31,10 @@ input:focus, select:focus { border-color: #d3a74d; }
 .bot-mini img { width: 24px; height: 33px; object-fit: cover; }
 .task-image { width: 100%; aspect-ratio: 1.5; object-fit: cover; border: 1px solid #45483f; }
 .playfield-shell { position: relative; margin-bottom: 20px; border: 1px solid #4b4637; background: #111; overflow: hidden; }
-.playfield-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; aspect-ratio: 1.7; }
-.playfield-grid img { width: 100%; height: 100%; min-height: 0; object-fit: cover; display: block; }
-.field-trackers { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); display: flex; gap: 7px; padding: 7px; border: 1px solid rgba(211,167,77,.7); background: rgba(16,18,22,.9); color: #d6c287; font-size: 9px; white-space: nowrap; }
-.field-trackers span { display: flex; gap: 4px; align-items: center; }.field-trackers b { color: #fff; font-size: 12px; }
+.playfield-image { display: block; width: 100%; height: auto; }
+.hand-actions { min-height: 18px; text-align: center; }
+.hand-collapsed .task-list { position: relative; height: 165px; margin: 0 0 4px; }
+.hand-collapsed .hand-card { position: absolute; top: 4px; width: 96px; height: 150px; padding: 5px; overflow: hidden; transform-origin: 50% 100%; }
+.hand-collapsed .hand-card-0 { left: 2px; transform: rotate(-8deg); }.hand-collapsed .hand-card-1 { left: 45px; transform: rotate(-3deg); }.hand-collapsed .hand-card-2 { left: 88px; transform: rotate(3deg); }.hand-collapsed .hand-card-3 { left: 131px; transform: rotate(8deg); }
+.hand-collapsed .hand-card .task-image { height: 140px; aspect-ratio: auto; }.hand-collapsed .hand-card .task-meta, .hand-collapsed .hand-card strong, .hand-collapsed .hand-card .task-check, .hand-collapsed .hand-card small { display: none; }
+.hand-expanded .task-list { display: grid; }.hand-expanded .hand-card { position: relative; width: auto; height: auto; transform: none; }

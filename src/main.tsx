@@ -5,10 +5,7 @@ import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, runBotTur
 import lobbyImage from "../assets/lobby.webp";
 import flamenkoImage from "../assets/cards/characters/flamenko.webp";
 import okruzhnyyImage from "../assets/cards/characters/okruzhnyy.webp";
-import pf1Image from "../assets/pf1.webp";
-import pf2Image from "../assets/pf2.webp";
-import pf3Image from "../assets/pf3.webp";
-import pf4Image from "../assets/pf4.webp";
+import fieldImage from "../assets/field.webp";
 import microwaveImage from "../assets/cards/capital/microwave.webp";
 import flatEarthImage from "../assets/cards/connections/flat_earth.webp";
 import missionImage from "../assets/cards/missions/5g_towers.webp";
@@ -86,6 +83,7 @@ function App() {
   const [language, setLanguage] = useState("Русский");
   const [game, setGame] = useState<GameState | null>(null);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
+  const [handExpanded, setHandExpanded] = useState(false);
   const [notice, setNotice] = useState("Выберите задание, затем регион для агента.");
 
   const activeAgent = agents[0];
@@ -158,23 +156,8 @@ function App() {
         <div><div className="eyebrow"><FlaskConical size={15} /> APOCALYPSIS</div><h1>Раунд {game?.round ?? 1} · Ход {playerName || "You"}</h1></div>
         <div className="header-actions"><span className="turn-pill"><Crown size={15} /> Первый игрок</span><button className="ghost-button" onClick={() => setScreen("lobby")}>Выйти</button></div>
       </header>
-      <section className="track-strip">
-        <Track icon={<Globe2 size={16} />} label="Просветление" value={tracks.enlightenment} max={12} tone="light" />
-        <Track icon={<Users size={16} />} label="Социальный" value={"social_progress" in tracks ? tracks.social_progress : tracks.social} max={13} tone="social" />
-        <Track icon={<FlaskConical size={16} />} label="Естественно-научный" value={"natural_progress" in tracks ? tracks.natural_progress : tracks.natural} max={13} tone="natural" />
-        <Track icon={<Dices size={16} />} label="Технический" value={"technical_progress" in tracks ? tracks.technical_progress : tracks.technical} max={13} tone="technical" />
-      </section>
       <section className="playfield-shell" aria-label="Original game field">
-        <div className="playfield-grid">
-          <img src={pf1Image} alt="Korea area" /><img src={pf2Image} alt="Vatican deck area" />
-          <img src={pf4Image} alt="World cards area" /><img src={pf3Image} alt="Crown area" />
-        </div>
-        <div className="field-trackers">
-          <span>Просветление <b>{tracks.enlightenment}</b></span>
-          <span>Социальный <b>{"social_progress" in tracks ? tracks.social_progress : tracks.social}</b></span>
-          <span>Естественно-научный <b>{"natural_progress" in tracks ? tracks.natural_progress : tracks.natural}</b></span>
-          <span>Технический <b>{"technical_progress" in tracks ? tracks.technical_progress : tracks.technical}</b></span>
-        </div>
+        <img className="playfield-image" src={fieldImage} alt="Apocalypsis game field" />
       </section>
       <div className="board-layout">
         <aside className="side-panel player-panel">
@@ -191,7 +174,7 @@ function App() {
           <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 2 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
           <div className="history-panel"><div className="history-heading"><span className="eyebrow">ИСТОРИЯ РАЗРЕШЕНИЯ</span><span>{game?.history.length ?? 0} событий</span></div>{(game?.history ?? []).slice(-5).reverse().map((event, index) => <div className="history-event" key={`${event.type}-${index}`}><span className="history-dot" /><div><strong>{event.message}</strong>{event.data?.dice ? <small>Кубик: {String(event.data.dice)} · Результат: {String(event.data.score)} / {String(event.data.difficulty)}</small> : null}</div></div>)}</div>
         </section>
-        <aside className="side-panel task-panel"><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task) => <button key={task.id} className={`task-card ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setSelectedTask(task.id)}><img className="task-image" src={taskImages[task.id]} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Выберите карту, затем регион</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
+        <aside className={`side-panel task-panel ${handExpanded ? "hand-expanded" : "hand-collapsed"}`}><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task, index) => <button key={task.id} className={`task-card hand-card hand-card-${index} ${selectedTask === task.id ? "selected" : ""}`} onClick={() => { setSelectedTask(task.id); setHandExpanded(true); }}><img className="task-image" src={taskImages[task.id]} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Выберите карту, затем регион</small></button>)}</div><div className="hand-actions">{handExpanded && <button className="small-link" onClick={() => setHandExpanded(false)}>Свернуть руку</button>}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
       </div>
     </main>
   );
