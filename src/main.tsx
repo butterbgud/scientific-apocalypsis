@@ -1,6 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowRight, BookOpen, Coins, Crown, Dices, FlaskConical, Globe2, HeartPulse, Users } from "lucide-react";
+import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, setup, type GameState } from "./engine";
 import "./styles.css";
 
 type Screen = "lobby" | "board";
@@ -63,35 +64,42 @@ function App() {
   const [screen, setScreen] = useState<Screen>("lobby");
   const [playerName, setPlayerName] = useState("You");
   const [language, setLanguage] = useState("Русский");
-  const [regions, setRegions] = useState(initialRegions);
-  const [tracks, setTracks] = useState(initialTracks);
+  const [game, setGame] = useState<GameState | null>(null);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [notice, setNotice] = useState("Выберите задание, затем регион для агента.");
 
   const activeAgent = agents[0];
-  const selectedTaskData = useMemo(() => tasks.find((task) => task.name === selectedTask), [selectedTask]);
+  const selectedTaskData = useMemo(() => game ? game.tasks[selectedTask ?? ""] : undefined, [game, selectedTask]);
 
   function startGame() {
+    const initialized = setup(42);
+    if ("error" in initialized) return setNotice(initialized.error);
+    const drawn = drawTaskChoices(initialized.state);
+    if ("error" in drawn) return setNotice(drawn.error);
+    setGame(drawn.state);
     setScreen("board");
     setNotice("Раунд 1 начинается. Выберите задание для Павла Фламинго.");
   }
 
   function assignTask(index: number) {
-    if (!selectedTaskData) {
+    if (!game || !selectedTaskData || !selectedTask) {
       setNotice("Сначала выберите карту задания.");
       return;
     }
-    if (regions[index].agent) {
-      setNotice("В этом регионе уже заняты обе зоны задания.");
-      return;
-    }
-    setRegions((current) => current.map((region, regionIndex) => regionIndex === index
-      ? { ...region, task: selectedTaskData.name, agent: activeAgent.name }
-      : region));
-    setTracks((current) => ({ ...current, enlightenment: current.enlightenment + 1 }));
-    setNotice(`${activeAgent.name} отправлен в регион «${regions[index].name}». Проверка готова к разрешению.`);
+    const region = Object.values(game.regions)[index];
+    const assigned = engineAssignTask(game, selectedTask, "agent.flamenko", region.id);
+    if ("error" in assigned) return setNotice(assigned.error);
+    const resolved = resolveTask(assigned.state, selectedTask);
+    if ("error" in resolved) return setNotice(resolved.error);
+    setGame(resolved.state);
+    setNotice(resolved.events[0].message);
     setSelectedTask(null);
   }
+
+  const player = game?.players.find((candidate) => candidate.id === "player.0");
+  const regions = game ? Object.values(game.regions) : initialRegions;
+  const boardTasks = game ? game.taskChoices.map((id) => game.tasks[id]) : [];
+  const tracks = game?.tracks ?? initialTracks;
 
   if (screen === "lobby") {
     return (
@@ -115,30 +123,30 @@ function App() {
   return (
     <main className="game-shell">
       <header className="game-header">
-        <div><div className="eyebrow"><FlaskConical size={15} /> APOCALYPSIS</div><h1>Раунд 1 · Ход {playerName || "You"}</h1></div>
+        <div><div className="eyebrow"><FlaskConical size={15} /> APOCALYPSIS</div><h1>Раунд {game?.round ?? 1} · Ход {playerName || "You"}</h1></div>
         <div className="header-actions"><span className="turn-pill"><Crown size={15} /> Первый игрок</span><button className="ghost-button" onClick={() => setScreen("lobby")}>Выйти</button></div>
       </header>
       <section className="track-strip">
         <Track icon={<Globe2 size={16} />} label="Просветление" value={tracks.enlightenment} max={12} tone="light" />
-        <Track icon={<Users size={16} />} label="Социальный" value={tracks.social} max={13} tone="social" />
-        <Track icon={<FlaskConical size={16} />} label="Естественно-научный" value={tracks.natural} max={13} tone="natural" />
-        <Track icon={<Dices size={16} />} label="Технический" value={tracks.technical} max={13} tone="technical" />
+        <Track icon={<Users size={16} />} label="Социальный" value={"social_progress" in tracks ? tracks.social_progress : tracks.social} max={13} tone="social" />
+        <Track icon={<FlaskConical size={16} />} label="Естественно-научный" value={"natural_progress" in tracks ? tracks.natural_progress : tracks.natural} max={13} tone="natural" />
+        <Track icon={<Dices size={16} />} label="Технический" value={"technical_progress" in tracks ? tracks.technical_progress : tracks.technical} max={13} tone="technical" />
       </section>
       <div className="board-layout">
         <aside className="side-panel player-panel">
           <div className="panel-heading"><span>Ваша фракция</span><Crown size={17} /></div>
           <h2>Мировое Антиправительство</h2>
-          <div className="resources"><Resource icon={<Coins size={17} />} label="Капитал" value={5} /><Resource icon={<Users size={17} />} label="Связи" value={4} /><Resource icon={<Crown size={17} />} label="Авторитет" value={1} /></div>
-          <div className="panel-heading agent-heading"><span>Агенты · 1/4</span><button className="small-link">+ нанять</button></div>
+          <div className="resources"><Resource icon={<Coins size={17} />} label="Капитал" value={player?.resources.capital ?? 0} /><Resource icon={<Users size={17} />} label="Связи" value={player?.resources.connections ?? 0} /><Resource icon={<Crown size={17} />} label="Авторитет" value={player?.resources.authority ?? 0} /></div>
+          <div className="panel-heading agent-heading"><span>Агенты · {player?.agents.length ?? 0}/4</span><button className="small-link">+ нанять</button></div>
           <article className="agent-card"><img src={activeAgent.image} alt="" /><div><strong>{activeAgent.name}</strong><span>{activeAgent.className}</span><small>{activeAgent.ability}</small></div></article>
           <div className="bot-mini"><span className="bot-dot" /> Bot · Ponomarev <span className="muted">3 агента</span></div>
         </aside>
         <section className="board-center">
           <div className="section-title"><div><span className="eyebrow">КАРТА МИРА</span><h2>Выберите регион для задания</h2></div><span className="round-status">{notice}</span></div>
-          <div className="regions-grid">{regions.map((region, index) => <button key={region.name} className={`region-card ${region.agent ? "occupied" : ""}`} onClick={() => assignTask(index)}><div className="region-top"><span>{String(index + 1).padStart(2, "0")}</span><span>{region.agent ? "занято" : "2 зоны"}</span></div><h3>{region.name}</h3><p>{region.bonus}</p>{region.agent ? <div className="placed-agent"><img src={activeAgent.image} alt="" /><span>{region.agent}</span></div> : <div className="empty-slot">свободные зоны · нажмите, чтобы разместить</div>}</button>)}</div>
-          <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.name}` : "Задание не выбрано"}</p></div><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div></div>
+          <div className="regions-grid">{regions.map((region, index) => <button key={region.name} className={`region-card ${"assignments" in region && region.assignments.length ? "occupied" : ""}`} onClick={() => assignTask(index)}><div className="region-top"><span>{String(index + 1).padStart(2, "0")}</span><span>{"assignments" in region ? `${region.capacity} зоны` : "2 зоны"}</span></div><h3>{region.name}</h3><p>{"bonus" in region ? region.bonus : "Региональная поддержка"}</p>{"assignments" in region && region.assignments.length ? <div className="placed-agent"><img src={activeAgent.image} alt="" /><span>{activeAgent.name}</span></div> : <div className="empty-slot">свободные зоны · нажмите, чтобы разместить</div>}</button>)}</div>
+          <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div></div>
         </section>
-        <aside className="side-panel task-panel"><div className="panel-heading"><span>Задания в руке · 3</span><BookOpen size={17} /></div><div className="task-list">{tasks.map((task) => <button key={task.name} className={`task-card ${selectedTask === task.name ? "selected" : ""}`} onClick={() => setSelectedTask(task.name)}><div className="task-meta"><span className={`task-type type-${task.type}`}>{task.type}</span><span>{task.cost} ◈</span></div><strong>{task.name}</strong><span className="task-check">{task.check}</span><small>{task.reward}</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
+        <aside className="side-panel task-panel"><div className="panel-heading"><span>Задания в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task) => <button key={task.id} className={`task-card ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setSelectedTask(task.id)}><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">{task.characteristic} · {task.difficulty}</span><small>{Object.entries(task.reward).map(([resource, value]) => `+${value} ${resource}`).join(", ")}</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
       </div>
     </main>
   );
