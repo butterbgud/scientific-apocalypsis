@@ -39,6 +39,8 @@ const agents: Agent[] = [
   },
 ];
 
+const botName = "Александр Окружной";
+
 const initialRegions: Region[] = [
   { name: "Англосаксония", bonus: "+1 Расследователь", task: null, agent: null },
   { name: "Азиатские республики", bonus: "+1 Предсказатель", task: null, agent: null },
@@ -124,7 +126,7 @@ function App() {
             <label>Имя игрока<input value={playerName} onChange={(event) => setPlayerName(event.target.value)} /></label>
             <label>Язык<select value={language} onChange={(event) => setLanguage(event.target.value)}><option>Русский</option><option>English</option></select></label>
           </div>
-          <div className="seat-preview"><Users size={18} /><span>{playerName || "You"}</span><span className="seat-divider">vs</span><span>Bot · Ponomarev</span></div>
+          <div className="seat-preview"><Users size={18} /><span>{playerName || "You"}</span><span className="seat-divider">vs</span><span>{botName}</span></div>
           <button className="primary-button" onClick={startGame}>Начать прототип <ArrowRight size={18} /></button>
           <p className="lobby-note">Версия прототипа · локальная игра · язык: {language}</p>
         </section>
@@ -151,7 +153,7 @@ function App() {
           <div className="resources"><Resource icon={<Coins size={17} />} label="Капитал" value={player?.resources.capital ?? 0} /><Resource icon={<Users size={17} />} label="Связи" value={player?.resources.connections ?? 0} /><Resource icon={<Crown size={17} />} label="Авторитет" value={player?.resources.authority ?? 0} /></div>
           <div className="panel-heading agent-heading"><span>Агенты · {player?.agents.length ?? 0}/4</span><button className="small-link">+ нанять</button></div>
           <article className="agent-card"><img src={activeAgent.image} alt="" /><div><strong>{activeAgent.name}</strong><span>{activeAgent.className}</span><small>{activeAgent.ability}</small></div></article>
-          <div className="bot-mini"><span className="bot-dot" /> Bot · Ponomarev <span className="muted">3 агента</span></div>
+          <div className="bot-mini"><span className="bot-dot" /> {botName} <span className="muted">3 агента</span></div>
         </aside>
         <section className="board-center">
           <div className="section-title"><div><span className="eyebrow">КАРТА МИРА</span><h2>Выберите регион для задания</h2></div><span className="round-status">{notice}</span></div>

@@ -83,7 +83,7 @@ export function setup(seed = 1, playerCount = 2): Result {
   const agents: Record<string, Agent> = {};
   for (const [index, player] of players.entries()) {
     const id = index === 0 ? starterAgent.id : "agent.bot.flamingo";
-    agents[id] = { ...starterAgent, id, name: index === 0 ? starterAgent.name : "Bot Helper", ownerId: player.id };
+    agents[id] = { ...starterAgent, id, name: index === 0 ? starterAgent.name : "Александр Окружной", ownerId: player.id };
     player.agents.push(id);
   }
   return result({ seed: random.seed(), phase: "task_selection", round: 1, currentPlayerId: "player.0", tracks: { enlightenment: 0, social_progress: 0, natural_progress: 0, technical_progress: 0 }, players, agents, regions: Object.fromEntries(regions.map((name, index) => [`region.${index}`, { id: `region.${index}`, name, capacity: 2, assignments: [] }])), tasks: Object.fromEntries(fixtureTasks.map((task) => [task.id, task])), taskDeck: ids, taskChoices: [], assignments: [], history: [], outcome: null }, [{ type: "setup", message: "Two-player game initialized." }]);
