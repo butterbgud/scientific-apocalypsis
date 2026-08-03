@@ -109,3 +109,20 @@ Generated from the asset filenames. `copies` is the number of physical copies in
 | `vatican.vatican_confirms` | `assets/cards/vatican/vatican_confirms.webp` | 1 |
 
 **Inventory check:** 10 Vatican fronts, one copy each, plus `back.webp`.
+
+## North Korea
+
+| ID | Asset | Copies |
+|---|---|---:|
+| `nk.bioshield` | `assets/cards/nk/bioshield.webp` | 1 |
+| `nk.cyberpara` | `assets/cards/nk/cyberpara.webp` | 1 |
+| `nk.irony_towards_leader` | `assets/cards/nk/irony_towards_leader.webp` | 1 |
+| `nk.medicine` | `assets/cards/nk/medicine.webp` | 1 |
+| `nk.military_support` | `assets/cards/nk/military_support.webp` | 1 |
+| `nk.nk_olympiad` | `assets/cards/nk/nk_olympiad.webp` | 1 |
+| `nk.nkdiet` | `assets/cards/nk/nkdiet.webp` | 1 |
+| `nk.provocation` | `assets/cards/nk/provocation.webp` | 1 |
+| `nk.song` | `assets/cards/nk/song.webp` | 1 |
+| `nk.wood_cars` | `assets/cards/nk/wood_cars.webp` | 1 |
+
+**Inventory check:** 10 North Korea fronts, one copy each.
