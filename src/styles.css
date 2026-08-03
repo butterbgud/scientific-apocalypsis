@@ -32,6 +32,23 @@ input:focus, select:focus { border-color: #d3a74d; }
 .task-image { width: 100%; aspect-ratio: 1.5; object-fit: cover; border: 1px solid #45483f; }
 .playfield-shell { position: relative; margin-bottom: 20px; border: 1px solid #4b4637; background: #111; overflow: hidden; }
 .playfield-image { display: block; width: 100%; height: auto; }
+.map-regions { position: absolute; inset: 0; pointer-events: none; }
+.map-region { position: absolute; display: block; padding: 0; border: 0; border-radius: 8px; background: transparent; pointer-events: auto; opacity: 0; transition: background .18s ease, box-shadow .18s ease, opacity .18s ease, transform .18s ease; }
+.map-region:hover, .map-region:focus-visible { opacity: 1; outline: none; transform: scale(1.025); }
+.map-region.occupied { opacity: 0; }
+.map-region.anglosaxony { --region-glow: #ff1735; }
+.map-region.asian-republics { --region-glow: #fff000; }
+.map-region.sharia-countries { --region-glow: #27f241; }
+.map-region.third-world { --region-glow: #2457b8; }
+.map-region.soviet-countries { --region-glow: #c921e8; }
+.map-region:hover, .map-region:focus-visible { background: color-mix(in srgb, var(--region-glow) 22%, transparent); box-shadow: 0 0 22px 7px color-mix(in srgb, var(--region-glow) 72%, transparent), inset 0 0 18px color-mix(in srgb, var(--region-glow) 38%, transparent); }
+.region-zone-anglosaxony { left: 17%; top: 53%; width: 25%; height: 28%; }
+.region-zone-asian { left: 28%; top: 20%; width: 25%; height: 25%; }
+.region-zone-sharia { left: 58%; top: 31%; width: 25%; height: 29%; }
+.region-zone-third-world { left: 35%; top: 39%; width: 29%; height: 31%; }
+.region-zone-soviet { left: 48%; top: 68%; width: 27%; height: 25%; }
+.map-instruction { display: flex; align-items: flex-end; justify-content: space-between; gap: 15px; margin-bottom: 15px; }
+.map-instruction .round-status { max-width: 420px; }
 .hand-actions { min-height: 18px; text-align: center; }
 .hand-collapsed .task-list { position: relative; height: 165px; margin: 0 0 4px; }
 .hand-collapsed .hand-card { position: absolute; top: 4px; width: 96px; height: 150px; padding: 5px; overflow: hidden; transform-origin: 50% 100%; }

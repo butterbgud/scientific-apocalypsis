@@ -130,6 +130,13 @@ function App() {
   const regions = game ? Object.values(game.regions) : initialRegions;
   const boardTasks = game ? game.taskChoices.map((id) => game.tasks[id]) : [];
   const tracks = game?.tracks ?? initialTracks;
+  const mapRegions = [
+    { index: 0, name: "Англосаксония", tone: "anglosaxony", position: "region-zone-anglosaxony" },
+    { index: 1, name: "Азиатские республики", tone: "asian-republics", position: "region-zone-asian" },
+    { index: 2, name: "Страны шариата", tone: "sharia-countries", position: "region-zone-sharia" },
+    { index: 3, name: "Третий мир", tone: "third-world", position: "region-zone-third-world" },
+    { index: 4, name: "Страны Советов", tone: "soviet-countries", position: "region-zone-soviet" },
+  ];
 
   if (screen === "lobby") {
     return (
@@ -158,6 +165,19 @@ function App() {
       </header>
       <section className="playfield-shell" aria-label="Original game field">
         <img className="playfield-image" src={fieldImage} alt="Apocalypsis game field" />
+        <div className="map-regions" aria-label="Игровые регионы">
+          {mapRegions.map((region) => {
+            const stateRegion = regions[region.index];
+            const occupied = "assignments" in stateRegion && stateRegion.assignments.length > 0;
+            return <button
+              key={region.name}
+              className={`map-region ${region.position} ${region.tone} ${occupied ? "occupied" : ""}`}
+              onClick={() => assignTask(region.index)}
+              aria-label={`Выбрать регион: ${region.name}`}
+              title={region.name}
+            />;
+          })}
+        </div>
       </section>
       <div className="board-layout">
         <aside className="side-panel player-panel">
@@ -169,8 +189,7 @@ function App() {
           <div className="bot-mini"><img src={botImage} alt="" /><span className="bot-dot" /> {botName} <span className="muted">3 агента</span></div>
         </aside>
         <section className="board-center">
-          <div className="section-title"><div><span className="eyebrow">КАРТА МИРА</span><h2>Выберите регион для задания</h2></div><span className="round-status">{notice}</span></div>
-          <div className="regions-grid">{regions.map((region, index) => <button key={region.name} className={`region-card ${"assignments" in region && region.assignments.length ? "occupied" : ""}`} onClick={() => assignTask(index)}><div className="region-top"><span>{String(index + 1).padStart(2, "0")}</span><span>{"assignments" in region ? `${region.capacity} зоны` : "2 зоны"}</span></div><h3>{region.name}</h3><p>{"bonus" in region ? region.bonus : "Региональная поддержка"}</p>{"assignments" in region && region.assignments.length ? <div className="placed-agent"><img src={activeAgent.image} alt="" /><span>{activeAgent.name}</span></div> : <div className="empty-slot">свободные зоны · нажмите, чтобы разместить</div>}</button>)}</div>
+          <div className="map-instruction"><span className="eyebrow">КАРТА МИРА</span><span className="round-status">{notice}</span></div>
           <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 2 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
           <div className="history-panel"><div className="history-heading"><span className="eyebrow">ИСТОРИЯ РАЗРЕШЕНИЯ</span><span>{game?.history.length ?? 0} событий</span></div>{(game?.history ?? []).slice(-5).reverse().map((event, index) => <div className="history-event" key={`${event.type}-${index}`}><span className="history-dot" /><div><strong>{event.message}</strong>{event.data?.dice ? <small>Кубик: {String(event.data.dice)} · Результат: {String(event.data.score)} / {String(event.data.difficulty)}</small> : null}</div></div>)}</div>
         </section>
