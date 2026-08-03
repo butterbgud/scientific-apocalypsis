@@ -5,7 +5,7 @@ Inventory captured from `assets/cards` on 2026-08-03. Counts include every file 
 | Deck directory | Files | PDF count | Review |
 |---|---:|---:|---|
 | `fractions` | 14 | 14 | matches |
-| `characters` | 36 files / 35 fronts | 35 | now matches after adding Bobbins and Gravebuilder; `back.webp` is the extra file |
+| `characters` | 37 files / 36 fronts | 36 | now matches the 36-card photo inventory; `back.webp` is the extra file |
 | `items` | 48 | 63 upgrades | likely incomplete/renamed or count convention differs |
 | `capital` | 25 | 25 | matches |
 | `connections` | 21 | 21 | matches |
