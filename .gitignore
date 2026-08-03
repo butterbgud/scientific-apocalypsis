@@ -4,3 +4,7 @@ dist/
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
+
+# Working notes and documentation are not runtime inputs.
+# Keep Markdown local unless a future source/config reference requires it.
+*.md
