@@ -79,7 +79,6 @@ const initialTracks: Record<TrackKey, number> = {
 
 function App() {
   const [screen, setScreen] = useState<Screen>("lobby");
-  const [playerName, setPlayerName] = useState("You");
   const [language, setLanguage] = useState("Русский");
   const [game, setGame] = useState<GameState | null>(null);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
@@ -140,16 +139,15 @@ function App() {
 
   if (screen === "lobby") {
     return (
-      <main className="lobby-shell" style={{ backgroundImage: `linear-gradient(135deg, rgba(17,20,24,.78), rgba(36,34,24,.82)), url(${lobbyImage})` }}>
+      <main className="lobby-shell" style={{ backgroundImage: `linear-gradient(135deg, rgba(17,20,24,.38), rgba(36,34,24,.44)), url(${lobbyImage})` }}>
         <section className="lobby-card">
-          <div className="eyebrow"><FlaskConical size={16} /> SCIENCE APOCALYPSE</div>
-          <h1>Apocalypsis</h1>
           <p className="lede">Мир ускоряется. Ваши агенты знают правду.</p>
-          <div className="lobby-form">
-            <label>Имя игрока<input value={playerName} onChange={(event) => setPlayerName(event.target.value)} /></label>
-            <label>Язык<select value={language} onChange={(event) => setLanguage(event.target.value)}><option>Русский</option><option>English</option></select></label>
+          <div className="lobby-controls">
+            <button className="language-button" onClick={() => setLanguage(language === "Русский" ? "English" : "Русский")}>
+              {language === "Русский" ? "English" : "Русский"}
+            </button>
           </div>
-          <div className="seat-preview"><Users size={18} /><span>{playerName || "You"}</span><span className="seat-divider">vs</span><span>{botName}</span></div>
+          <div className="seat-preview"><Users size={18} /><span>You</span><span className="seat-divider">vs</span><span>{botName}</span></div>
           <button className="primary-button" onClick={startGame}>Начать прототип <ArrowRight size={18} /></button>
           <p className="lobby-note">Версия прототипа · локальная игра · язык: {language}</p>
         </section>
@@ -160,7 +158,7 @@ function App() {
   return (
     <main className="game-shell">
       <header className="game-header">
-        <div><div className="eyebrow"><FlaskConical size={15} /> APOCALYPSIS</div><h1>Раунд {game?.round ?? 1} · Ход {playerName || "You"}</h1></div>
+        <div><div className="eyebrow"><FlaskConical size={15} /> APOCALYPSIS</div><h1>Раунд {game?.round ?? 1} · Ход You</h1></div>
         <div className="header-actions"><span className="turn-pill"><Crown size={15} /> Первый игрок</span><button className="ghost-button" onClick={() => setScreen("lobby")}>Выйти</button></div>
       </header>
       <section className="playfield-shell" aria-label="Original game field">
