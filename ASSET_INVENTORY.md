@@ -9,7 +9,7 @@ Inventory captured from `assets/cards` on 2026-08-03. Counts include every file 
 | `items` | 50 files / 49 fronts | 63 physical upgrades | now reconciled: 49 unique fronts, with filename copy counts summing to 63; `back.webp` is the extra file |
 | `capital` | 25 | 25 | matches |
 | `connections` | 21 | 21 | matches |
-| `missions` | 19 | 18 | one extra, or source count differs |
+| `missions` | 19 | 18 in PDF / 19 current assets | accept 19 for MVP; likely a later revision or an added card |
 | `crisis` | 9 | 9 | matches |
 | `atlantis` | 18 | 18 | matches |
 | `bosses` | 9 | 18 | likely source count includes paired/card-side convention; verify |
