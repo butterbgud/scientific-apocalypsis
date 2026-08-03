@@ -17,7 +17,7 @@ Inventory captured from `assets/cards` on 2026-08-03. Counts include every file 
 | `epidemic` | 11 | 11 | matches |
 | `war` | 11 | 11 | matches |
 | `world` | 28 | 28 | now matches after filename cleanup |
-| `vatican` | 11 | 10 | includes `back.webp`; likely 10 fronts |
+| `vatican` | 11 files / 10 fronts | 10 | matches: `back.webp` is the back-side graphic |
 | `nk` | 9 | 10 | one missing, or source count differs |
 
 ## Immediate reconciliation work

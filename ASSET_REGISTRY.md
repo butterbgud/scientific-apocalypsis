@@ -92,3 +92,20 @@ Generated from the asset filenames. `copies` is the number of physical copies in
 | `world.toilet` | `assets/cards/world/toilet.webp` | 1 |
 
 **Inventory check:** 28 World fronts, one copy each. The old generated filenames and `free_healthcare_back.webp` are no longer part of the current set.
+
+## Vatican
+
+| ID | Asset | Copies |
+|---|---|---:|
+| `vatican.atheism` | `assets/cards/vatican/atheism.webp` | 1 |
+| `vatican.big_bang` | `assets/cards/vatican/big_bang.webp` | 1 |
+| `vatican.conception` | `assets/cards/vatican/conception.webp` | 1 |
+| `vatican.digital` | `assets/cards/vatican/digital.webp` | 1 |
+| `vatican.doubt` | `assets/cards/vatican/doubt.webp` | 1 |
+| `vatican.other_planets` | `assets/cards/vatican/other_planets.webp` | 1 |
+| `vatican.snake` | `assets/cards/vatican/snake.webp` | 1 |
+| `vatican.sorry_for_inq` | `assets/cards/vatican/sorry_for_inq.webp` | 1 |
+| `vatican.turin_doubt` | `assets/cards/vatican/turin_doubt.webp` | 1 |
+| `vatican.vatican_confirms` | `assets/cards/vatican/vatican_confirms.webp` | 1 |
+
+**Inventory check:** 10 Vatican fronts, one copy each, plus `back.webp`.
