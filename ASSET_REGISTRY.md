@@ -57,3 +57,38 @@ Generated from the asset filenames. `copies` is the number of physical copies in
 | `item.yeti` | `assets/cards/items/yeti.webp` | 1 |
 
 **Inventory check:** 49 unique item fronts, 63 physical item cards, plus `back.webp`.
+
+## World
+
+| ID | Asset | Copies |
+|---|---|---:|
+| `world.antiwar_resolution` | `assets/cards/world/antiwar_resolution.webp` | 1 |
+| `world.baby` | `assets/cards/world/baby.webp` | 1 |
+| `world.bacteria` | `assets/cards/world/bacteria.webp` | 1 |
+| `world.dislikes` | `assets/cards/world/dislikes.webp` | 1 |
+| `world.driving` | `assets/cards/world/driving.webp` | 1 |
+| `world.earthquake` | `assets/cards/world/earthquake.webp` | 1 |
+| `world.family` | `assets/cards/world/family.webp` | 1 |
+| `world.field` | `assets/cards/world/field.webp` | 1 |
+| `world.free_education` | `assets/cards/world/free education.webp` | 1 |
+| `world.free_healthcare` | `assets/cards/world/free_healthcare.webp` | 1 |
+| `world.grandma` | `assets/cards/world/grandma.webp` | 1 |
+| `world.gryphon` | `assets/cards/world/gryphon.webp` | 1 |
+| `world.luddites` | `assets/cards/world/luddites.webp` | 1 |
+| `world.moon` | `assets/cards/world/moon.webp` | 1 |
+| `world.new_respiratory_infection` | `assets/cards/world/new respiratory infection.webp` | 1 |
+| `world.old_baby` | `assets/cards/world/old_baby.webp` | 1 |
+| `world.old_guy_disco` | `assets/cards/world/old_guy_disco.webp` | 1 |
+| `world.olympic` | `assets/cards/world/olympic.webp` | 1 |
+| `world.passport` | `assets/cards/world/passport.webp` | 1 |
+| `world.pie` | `assets/cards/world/pie.webp` | 1 |
+| `world.podcast` | `assets/cards/world/podcast.webp` | 1 |
+| `world.poke` | `assets/cards/world/poke.webp` | 1 |
+| `world.popcorn` | `assets/cards/world/popcorn.webp` | 1 |
+| `world.pseudostupidity` | `assets/cards/world/pseudostupidity.webp` | 1 |
+| `world.rocket` | `assets/cards/world/rocket.webp` | 1 |
+| `world.seed_bank` | `assets/cards/world/seed_bank.webp` | 1 |
+| `world.teapot` | `assets/cards/world/teapot.webp` | 1 |
+| `world.toilet` | `assets/cards/world/toilet.webp` | 1 |
+
+**Inventory check:** 28 World fronts, one copy each. The old generated filenames and `free_healthcare_back.webp` are no longer part of the current set.

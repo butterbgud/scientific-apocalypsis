@@ -12,11 +12,11 @@ Inventory captured from `assets/cards` on 2026-08-03. Counts include every file 
 | `missions` | 19 | 18 in PDF / 19 current assets | accept 19 for MVP; likely a later revision or an added card |
 | `crisis` | 9 | 9 | matches |
 | `atlantis` | 18 | 18 | matches |
-| `bosses` | 9 | 18 | likely source count includes paired/card-side convention; verify |
+| `bosses` | 9 | 9 current set | accepted as the correct boss set |
 | `hunger` | 11 | 11 | matches |
 | `epidemic` | 11 | 11 | matches |
 | `war` | 11 | 11 | matches |
-| `world` | 30 | 28 | two extra, or source count differs |
+| `world` | 28 | 28 | now matches after filename cleanup |
 | `vatican` | 11 | 10 | includes `back.webp`; likely 10 fronts |
 | `nk` | 9 | 10 | one missing, or source count differs |
 
