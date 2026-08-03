@@ -56,6 +56,16 @@ Add card families in this order: verified basic tasks, all three disasters, Worl
 
 From a fresh seed, the human can start a game, buy at least one agent or upgrade, choose a task, place an agent in a region, resolve any required disaster, make a check, receive the correct outcome, watch a bot take its turn, and see either the next round or a correctly declared end state. Replaying the same seed produces the same state transitions.
 
+## Work split
+
+### Codex
+
+Implement the asset inventory, stable card IDs, schema, effect timing vocabulary, deterministic state transitions, and fixture tests. Keep unreviewed cards disabled and surface every legality error explicitly.
+
+### Konsta
+
+Review `ASSET_INVENTORY.md` against the physical/PDF card set: identify the missing character and North Korea card, confirm whether bosses/items/world counts include backs or alternate sides, and approve the six cards for the first fixture set. No coding is required for this review.
+
 ## Immediate next action
 
 Perform Gate 0: inventory reconciliation and card schema design. Do not start UI work until the state and effect timing vocabulary is written down; otherwise the first card exceptions will leak into the interface and become expensive to undo.
