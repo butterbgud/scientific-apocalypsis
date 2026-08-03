@@ -77,7 +77,7 @@ function fail(message: string): Result { return { error: message }; }
 export function setup(seed = 1, playerCount = 2): Result {
   if (playerCount !== 2) return fail("MVP setup supports exactly two players.");
   const random = rng(seed);
-  const ids = fixtureTasks.map((task) => task.id).sort(() => random.next() - 0.5);
+  const ids = Array.from({ length: 3 }, () => fixtureTasks.map((task) => task.id)).flat().sort(() => random.next() - 0.5);
   const regions = ["Anglosaxony", "Asian Republics", "Sharia Countries", "Third World", "Soviet Countries"];
   const players: Player[] = [0, 1].map((index) => ({ id: `player.${index}`, name: index === 0 ? "You" : "Bot", resources: { capital: 5, connections: 4, authority: 1 }, agents: [], hand: [], sentThisRound: 0 }));
   const agents: Record<string, Agent> = {};
@@ -148,6 +148,15 @@ export function runBotTurn(state: GameState): Result {
   const resolved = resolveTask(assigned.state, taskId);
   if ("error" in resolved) return resolved;
   return result({ ...resolved.state, currentPlayerId: "player.0", phase: "actions" }, [{ type: "bot_turn", message: "Bot completed its task." }]);
+}
+
+export function startNextRound(state: GameState): Result {
+  if (state.phase !== "actions") return fail("The next round can only begin after all actions resolve.");
+  if (state.players.some((player) => player.sentThisRound < 2)) return fail("Both players must send two agents before the round ends.");
+  const regions = Object.fromEntries(Object.values(state.regions).map((region) => [region.id, { ...region, assignments: [] }]));
+  const agents = Object.fromEntries(Object.values(state.agents).map((agent) => [agent.id, { ...agent, location: null }]));
+  const players = state.players.map((player) => ({ ...player, sentThisRound: 0 }));
+  return result({ ...state, round: state.round + 1, phase: "task_selection", taskChoices: [], assignments: [], regions, agents, players }, [{ type: "round_end", message: `Round ${state.round} ended.` }]);
 }
 
 export function getOutcome(state: GameState): GameState["outcome"] {

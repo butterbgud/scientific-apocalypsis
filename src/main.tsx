@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowRight, BookOpen, Coins, Crown, Dices, FlaskConical, Globe2, HeartPulse, Users } from "lucide-react";
-import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, runBotTurn, setup, type GameState } from "./engine";
+import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, runBotTurn, setup, startNextRound, type GameState } from "./engine";
 import "./styles.css";
 
 type Screen = "lobby" | "board";
@@ -98,6 +98,16 @@ function App() {
     setSelectedTask(null);
   }
 
+  function nextRound() {
+    if (!game) return;
+    const ended = startNextRound(game);
+    if ("error" in ended) return setNotice(ended.error);
+    const drawn = drawTaskChoices(ended.state);
+    if ("error" in drawn) return setNotice(drawn.error);
+    setGame(drawn.state);
+    setNotice(`Раунд ${drawn.state.round} начинается. Выберите задание.`);
+  }
+
   const player = game?.players.find((candidate) => candidate.id === "player.0");
   const regions = game ? Object.values(game.regions) : initialRegions;
   const boardTasks = game ? game.taskChoices.map((id) => game.tasks[id]) : [];
@@ -146,7 +156,7 @@ function App() {
         <section className="board-center">
           <div className="section-title"><div><span className="eyebrow">КАРТА МИРА</span><h2>Выберите регион для задания</h2></div><span className="round-status">{notice}</span></div>
           <div className="regions-grid">{regions.map((region, index) => <button key={region.name} className={`region-card ${"assignments" in region && region.assignments.length ? "occupied" : ""}`} onClick={() => assignTask(index)}><div className="region-top"><span>{String(index + 1).padStart(2, "0")}</span><span>{"assignments" in region ? `${region.capacity} зоны` : "2 зоны"}</span></div><h3>{region.name}</h3><p>{"bonus" in region ? region.bonus : "Региональная поддержка"}</p>{"assignments" in region && region.assignments.length ? <div className="placed-agent"><img src={activeAgent.image} alt="" /><span>{activeAgent.name}</span></div> : <div className="empty-slot">свободные зоны · нажмите, чтобы разместить</div>}</button>)}</div>
-          <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div></div>
+          <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 2 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
           <div className="history-panel"><div className="history-heading"><span className="eyebrow">ИСТОРИЯ РАЗРЕШЕНИЯ</span><span>{game?.history.length ?? 0} событий</span></div>{(game?.history ?? []).slice(-5).reverse().map((event, index) => <div className="history-event" key={`${event.type}-${index}`}><span className="history-dot" /><div><strong>{event.message}</strong>{event.data?.dice ? <small>Кубик: {String(event.data.dice)} · Результат: {String(event.data.score)} / {String(event.data.difficulty)}</small> : null}</div></div>)}</div>
         </section>
         <aside className="side-panel task-panel"><div className="panel-heading"><span>Задания в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task) => <button key={task.id} className={`task-card ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setSelectedTask(task.id)}><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">{task.characteristic} · {task.difficulty}</span><small>{Object.entries(task.reward).map(([resource, value]) => `+${value} ${resource}`).join(", ")}</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
