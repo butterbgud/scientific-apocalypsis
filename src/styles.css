@@ -28,3 +28,5 @@ input:focus, select:focus { border-color: #d3a74d; }
 @media (max-width: 1080px) { .board-layout { grid-template-columns: 215px minmax(0, 1fr); }.task-panel { grid-column: 1 / -1; }.task-list { grid-template-columns: repeat(3, 1fr); }.secondary-button { max-width: 260px; } }
 @media (max-width: 720px) { .game-shell { padding: 14px; }.game-header { align-items: start; }.header-actions { flex-direction: column; align-items: end; gap: 8px; }.track-strip { grid-template-columns: repeat(2, 1fr); }.track:nth-child(2) { border-right: 0; }.board-layout { display: flex; flex-direction: column; }.side-panel, .board-center, .task-panel { width: 100%; }.regions-grid { grid-template-columns: 1fr; }.section-title { align-items: start; flex-direction: column; }.round-status { max-width: none; text-align: left; }.task-list { grid-template-columns: 1fr 1fr; }.lobby-card { padding: 28px; } }
 @media (max-width: 440px) { .lobby-form { grid-template-columns: 1fr; }.task-list { grid-template-columns: 1fr; } }
+.bot-mini img { width: 24px; height: 33px; object-fit: cover; }
+.task-image { width: 100%; aspect-ratio: 1.5; object-fit: cover; border: 1px solid #45483f; }

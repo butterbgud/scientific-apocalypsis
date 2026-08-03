@@ -40,6 +40,7 @@ const agents: Agent[] = [
 ];
 
 const botName = "Александр Окружной";
+const botImage = "/assets/cards/characters/okruzhnyy.webp";
 
 const initialRegions: Region[] = [
   { name: "Англосаксония", bonus: "+1 Расследователь", task: null, agent: null },
@@ -153,7 +154,7 @@ function App() {
           <div className="resources"><Resource icon={<Coins size={17} />} label="Капитал" value={player?.resources.capital ?? 0} /><Resource icon={<Users size={17} />} label="Связи" value={player?.resources.connections ?? 0} /><Resource icon={<Crown size={17} />} label="Авторитет" value={player?.resources.authority ?? 0} /></div>
           <div className="panel-heading agent-heading"><span>Агенты · {player?.agents.length ?? 0}/4</span><button className="small-link">+ нанять</button></div>
           <article className="agent-card"><img src={activeAgent.image} alt="" /><div><strong>{activeAgent.name}</strong><span>{activeAgent.className}</span><small>{activeAgent.ability}</small></div></article>
-          <div className="bot-mini"><span className="bot-dot" /> {botName} <span className="muted">3 агента</span></div>
+          <div className="bot-mini"><img src={botImage} alt="" /><span className="bot-dot" /> {botName} <span className="muted">3 агента</span></div>
         </aside>
         <section className="board-center">
           <div className="section-title"><div><span className="eyebrow">КАРТА МИРА</span><h2>Выберите регион для задания</h2></div><span className="round-status">{notice}</span></div>
@@ -161,7 +162,7 @@ function App() {
           <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 2 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
           <div className="history-panel"><div className="history-heading"><span className="eyebrow">ИСТОРИЯ РАЗРЕШЕНИЯ</span><span>{game?.history.length ?? 0} событий</span></div>{(game?.history ?? []).slice(-5).reverse().map((event, index) => <div className="history-event" key={`${event.type}-${index}`}><span className="history-dot" /><div><strong>{event.message}</strong>{event.data?.dice ? <small>Кубик: {String(event.data.dice)} · Результат: {String(event.data.score)} / {String(event.data.difficulty)}</small> : null}</div></div>)}</div>
         </section>
-        <aside className="side-panel task-panel"><div className="panel-heading"><span>Задания в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task) => <button key={task.id} className={`task-card ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setSelectedTask(task.id)}><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">{task.characteristic} · {task.difficulty}</span><small>{Object.entries(task.reward).map(([resource, value]) => `+${value} ${resource}`).join(", ")}</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
+        <aside className="side-panel task-panel"><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task) => <button key={task.id} className={`task-card ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setSelectedTask(task.id)}><img className="task-image" src={task.image} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Выберите карту, затем регион</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
       </div>
     </main>
   );

@@ -5,6 +5,7 @@ export type Phase = "purchase" | "task_selection" | "actions" | "resolution" | "
 export type TaskCard = {
   id: string;
   title: string;
+  image: string;
   deck: "capital" | "connections" | "mission";
   cost: number;
   characteristic: keyof Agent["characteristics"];
@@ -48,10 +49,10 @@ export type GameState = {
 export type Result<T = GameState> = { state: T; events: Event[] } | { error: string };
 
 const fixtureTasks: TaskCard[] = [
-  { id: "task.capital.microwave", title: "Микроволновка в топку", deck: "capital", cost: 1, characteristic: "psychopathy", difficulty: 3, reward: { capital: 2 }, trackReward: { enlightenment: 1 } },
-  { id: "task.connections.flat-earth", title: "Плоскоземельный сайт знакомств", deck: "connections", cost: 1, characteristic: "charisma", difficulty: 3, reward: { connections: 2 }, trackReward: { social_progress: 1 } },
-  { id: "task.mission.digital-religion", title: "Цифровая религия", deck: "mission", cost: 2, characteristic: "machiavellianism", difficulty: 4, reward: { authority: 1 }, trackReward: { technical_progress: 1 } },
-  { id: "task.capital.herbs", title: "Травы против нанороботов", deck: "capital", cost: 1, characteristic: "intelligence", difficulty: 2, reward: { capital: 1 }, trackReward: { natural_progress: 1 } },
+  { id: "task.capital.microwave", title: "Карта капитала", image: "/assets/cards/capital/microwave.webp", deck: "capital", cost: 1, characteristic: "psychopathy", difficulty: 3, reward: { capital: 2 }, trackReward: { enlightenment: 1 } },
+  { id: "task.connections.flat-earth", title: "Карта связей", image: "/assets/cards/connections/flat_earth.webp", deck: "connections", cost: 1, characteristic: "charisma", difficulty: 3, reward: { connections: 2 }, trackReward: { social_progress: 1 } },
+  { id: "task.mission.digital-religion", title: "Карта миссии", image: "/assets/cards/missions/5g_towers.webp", deck: "mission", cost: 2, characteristic: "machiavellianism", difficulty: 4, reward: { authority: 1 }, trackReward: { technical_progress: 1 } },
+  { id: "task.capital.herbs", title: "Карта капитала", image: "/assets/cards/capital/herbs.webp", deck: "capital", cost: 1, characteristic: "intelligence", difficulty: 2, reward: { capital: 1 }, trackReward: { natural_progress: 1 } },
 ];
 
 const starterAgent: Omit<Agent, "ownerId"> = {
