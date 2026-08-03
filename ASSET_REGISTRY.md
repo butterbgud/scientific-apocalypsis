@@ -186,9 +186,7 @@ These decks have no temporary copy suffixes; every listed front currently contri
 
 | ID | Asset | Copies |
 |---|---|---:|
-| `capital.chatgpt_image_jun_12` | `assets/cards/capital/ChatGPT Image Jun 12` | 1 |
-| `capital.2026` | `assets/cards/capital/ 2026` | 1 |
-| `capital.09_57_56_pm` | `assets/cards/capital/ 09_57_56 PM.webp` | 1 |
+| `capital.chatgpt_image_jun_12_2026_09_57_56_pm` | `assets/cards/capital/ChatGPT Image Jun 12, 2026, 09_57_56 PM.webp` | 1 |
 | `capital.bats` | `assets/cards/capital/bats.webp` | 1 |
 | `capital.business_old` | `assets/cards/capital/business_old.webp` | 1 |
 | `capital.capital` | `assets/cards/capital/capital.webp` | 1 |
