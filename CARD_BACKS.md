@@ -6,8 +6,10 @@ Apocalypsis uses reusable background templates instead of separate Russian and E
 
 | Template | Size | Intended use |
 |---|---:|---|
-| `assets/back.png` | 1049×1500 | neutral/default card back |
-| `assets/back_yellow.png` | 1049×1500 | yellow/water-marked card-back variant |
+| `assets/back.webp` | 1049×1500 | neutral/default card back |
+| `assets/back_yellow.webp` | 1049×1500 | yellow/water-marked card-back variant |
+
+The supplied PNGs (`back.png` and `back_yellow.png`) are retained as source artwork; the WebP copies are the runtime assets.
 
 The exact deck-to-template mapping is a presentation decision and can be stored in the registry as `back_template: neutral | yellow`. The templates remain language-neutral.
 
@@ -35,6 +37,6 @@ For the later card-browser, tutorial, debug, and print/export views, the same te
 
 ## Implementation notes
 
-- Keep the PNG templates as source assets for now; they are small and preserve the supplied artwork.
+- Keep the PNG templates as source assets; they preserve the supplied artwork and the WebP copies are the runtime assets.
 - The UI should expose `renderCardBack(template, locale, overlay)` rather than generate per-language image files.
 - A future print renderer may rasterize the composed template and text, but that generated output should remain disposable rather than becoming a source asset.

@@ -131,7 +131,7 @@ Generated from the asset filenames. `copies` is the number of physical copies in
 
 | ID | Asset | Size |
 |---|---|---:|
-| `back.neutral` | `assets/back.png` | 1049×1500 |
-| `back.yellow` | `assets/back_yellow.png` | 1049×1500 |
+| `back.neutral` | `assets/back.webp` | 1049×1500 |
+| `back.yellow` | `assets/back_yellow.webp` | 1049×1500 |
 
 These are reusable language-neutral backgrounds. See `CARD_BACKS.md` for overlay and secrecy rules.
