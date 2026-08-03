@@ -12,6 +12,7 @@ Every card gets an immutable ID of the form `<deck>.<slug>`, for example `charac
 id: mission.example
 deck: mission
 asset: assets/cards/missions/example.webp
+copies: 1
 title:
   ru: "Название"
   en: null
@@ -24,6 +25,8 @@ source: { pdf_page: null, ocr_id: null, confidence: low }
 ```
 
 `reviewed: false` is a hard content gate, not a suggestion. It keeps uncertain OCR out of the playable deck.
+
+During asset intake, a temporary filename suffix such as `example x3.webp` means `copies: 3`. The suffix is parsed once into the registry and then removed from the canonical asset filename. A card’s stable ID remains singular; `copies` controls how many physical copies enter its deck.
 
 ## Card types
 

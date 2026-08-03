@@ -25,8 +25,14 @@ Inventory captured from `assets/cards` on 2026-08-03. Counts include every file 
 1. Separate front cards from backs and non-card leftovers.
 2. Compare stable titles, not filenames, against the PDF component counts.
 3. Identify the missing character and North Korea card, and explain the boss/world/mission/item count differences.
-4. Add stable IDs and `reviewed` status to a machine-readable catalogue.
-5. Do not enable an unreviewed asset in the MVP deck.
+4. Parse temporary multiplicity suffixes such as `x3` into a `copies` field in the card registry.
+5. Normalize filenames after parsing, removing the temporary `xN` suffix while retaining the copy count in the registry.
+6. Add stable IDs and `reviewed` status to a machine-readable catalogue.
+7. Do not enable an unreviewed asset in the MVP deck.
+
+## Temporary copy-count convention
+
+When a filename ends in `xN`, `N` is the intended number of physical copies of that card. For example, `world/earthquake x3.webp` becomes registry entry `world.earthquake` with `copies: 3`, then the canonical file is renamed to `earthquake.webp`. Files without a suffix default to `copies: 1` until reviewed.
 
 ## Current obvious special files
 
