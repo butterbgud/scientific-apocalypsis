@@ -49,6 +49,7 @@ const agents: Agent[] = [
 
 const botName = "Александр Окружной";
 const botImage = okruzhnyyImage;
+const appVersion = "20e3c0c";
 const tutorialAgent: Agent = { name: "Алексей Трёхкорочкин", className: "Духовный лидер", characteristic: "Воля", ability: "Обучающий стартовый агент.", image: alexImage };
 const taskImages: Record<string, string> = {
   "task.capital.microwave": microwaveImage,
@@ -138,15 +139,12 @@ function App() {
       ? "Шаг 3 из 3 · Задание разрешено. Нажмите «Следующий раунд», чтобы продолжить."
       : "Шаг 1 из 3 · Откройте руку и выберите карту задания.";
   if (screen === "lobby") {
+    const english = language === "English";
     return (
-      <main className="lobby-shell" style={{ backgroundImage: `linear-gradient(135deg, rgba(17,20,24,.38), rgba(36,34,24,.44)), url(${lobbyImage})` }}>
+      <main className="lobby-shell" style={{ backgroundImage: `url(${lobbyImage})` }}>
+        <div className="lobby-topbar"><button className="language-button" onClick={() => setLanguage(english ? "Русский" : "English")}>{english ? "Русский" : "English"}</button><span className="lobby-version">#{appVersion}</span></div>
         <section className="lobby-card">
-          <div className="lobby-controls">
-            <button className="language-button" onClick={() => setLanguage(language === "Русский" ? "English" : "Русский")}>
-              {language === "Русский" ? "English" : "Русский"}
-            </button>
-          </div>
-          <div className="lobby-actions"><button className="primary-button" onClick={() => startGame(false)}>Начать прототип <ArrowRight size={18} /></button><button className="tutorial-button" onClick={() => startGame(true)}>Tutorial Match <BookOpen size={17} /></button></div>
+          <div className="lobby-actions"><button className="primary-button" onClick={() => startGame(false)}>{english ? "Start Prototype" : "Начать прототип"} <ArrowRight size={18} /></button><button className="tutorial-button" onClick={() => startGame(true)}>{english ? "Tutorial Match" : "Обучающая партия"} <BookOpen size={17} /></button></div>
         </section>
       </main>
     );

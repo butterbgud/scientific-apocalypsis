@@ -3,13 +3,13 @@
 body { margin: 0; min-width: 320px; background: radial-gradient(circle at 80% 0%, #252319 0, #101216 42rem); }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
-.lobby-shell { min-height: 100vh; display: grid; place-items: center; padding: 28px; background-position: center; background-size: cover; background-attachment: fixed; }
-.lobby-card { width: min(520px, 100%); border: 1px solid #514e42; background: rgba(22, 24, 27, .93); padding: 48px; box-shadow: 0 24px 80px #08090b; }
+.lobby-shell { position: relative; min-height: 100vh; display: grid; place-items: center; padding: 28px; background-position: center; background-size: cover; background-attachment: fixed; }
+.lobby-card { width: min(520px, 100%); padding: 48px; }
 .eyebrow { display: flex; align-items: center; gap: 8px; color: #d3a74d; font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
 h1, h2, h3, p { margin-top: 0; }
 .lobby-card h1 { margin: 22px 0 10px; font-family: Georgia, serif; font-size: clamp(46px, 10vw, 76px); letter-spacing: -.05em; color: #f1eadc; }
 .lede { color: #aaa79c; font-size: 17px; }
-.lobby-controls { display: flex; justify-content: flex-end; margin: 30px 0 18px; }
+.lobby-topbar { position: absolute; top: 20px; left: 20px; display: flex; align-items: center; gap: 12px; }.lobby-version { color: rgba(238, 233, 221, .72); font-size: 11px; letter-spacing: .08em; }
 .language-button { border: 1px solid #474941; background: #15181a; color: #eee9dd; padding: 10px 14px; font-size: 12px; }
 .language-button:hover { border-color: #d3a74d; color: #d3a74d; }
 label { color: #aaa79c; font-size: 12px; }
