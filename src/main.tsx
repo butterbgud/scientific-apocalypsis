@@ -49,7 +49,7 @@ const agents: Agent[] = [
 
 const botName = "Александр Окружной";
 const botImage = okruzhnyyImage;
-const appVersion = "3fb7b09";
+const appVersion = import.meta.env.VITE_GIT_COMMIT ?? "dev";
 const tutorialAgent: Agent = { name: "Алексей Трёхкорочкин", className: "Духовный лидер", characteristic: "Воля", ability: "Обучающий стартовый агент.", image: alexImage };
 const taskImages: Record<string, string> = {
   "task.capital.microwave": microwaveImage,
