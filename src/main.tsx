@@ -128,6 +128,11 @@ function App() {
   const regions = game ? Object.values(game.regions) : initialRegions;
   const boardTasks = game ? game.taskChoices.map((id) => game.tasks[id]) : [];
   const tracks = game?.tracks ?? initialTracks;
+  const tutorialStep = selectedTask
+    ? "Шаг 2 из 3 · Нажмите на регион, чтобы отправить агента."
+    : player && player.sentThisRound > 0
+      ? "Шаг 3 из 3 · Задание разрешено. Нажмите «Следующий раунд», чтобы продолжить."
+      : "Шаг 1 из 3 · Откройте руку и выберите карту задания.";
   if (screen === "lobby") {
     return (
       <main className="lobby-shell" style={{ backgroundImage: `linear-gradient(135deg, rgba(17,20,24,.38), rgba(36,34,24,.44)), url(${lobbyImage})` }}>
@@ -158,6 +163,7 @@ function App() {
         <Track icon={<FlaskConical size={16} />} label="Естественно-научный" value={"natural_progress" in tracks ? tracks.natural_progress : tracks.natural} max={13} tone="natural" />
         <Track icon={<Dices size={16} />} label="Технический" value={"technical_progress" in tracks ? tracks.technical_progress : tracks.technical} max={13} tone="technical" />
       </section>
+      <div className="tutorial-bar"><span className="tutorial-label">ТУТОРИАЛ</span><span>{tutorialStep}</span></div>
       <div className="board-layout">
         <aside className="side-panel player-panel">
           <div className="panel-heading"><span>Ваша фракция</span><Crown size={17} /></div>
@@ -170,7 +176,7 @@ function App() {
         <section className="board-center">
           <div className="section-title"><div><span className="eyebrow">КАРТА МИРА</span><h2>Выберите регион для задания</h2></div><span className="round-status">{notice}</span></div>
           <div className="regions-grid">{regions.map((region, index) => <button key={region.name} className={`region-card ${"assignments" in region && region.assignments.length ? "occupied" : ""}`} onClick={() => assignTask(index)}><div className="region-top"><span>{String(index + 1).padStart(2, "0")}</span><span>{"assignments" in region ? `${region.capacity} зоны` : "2 зоны"}</span></div><h3>{region.name}</h3><p>{"bonus" in region ? region.bonus : "Региональная поддержка"}</p>{"assignments" in region && region.assignments.length ? <div className="placed-agent"><img src={activeAgent.image} alt="" /><span>{activeAgent.name}</span></div> : <div className="empty-slot">свободные зоны · нажмите, чтобы разместить</div>}</button>)}</div>
-          <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 2 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
+          <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 1 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
           <div className="history-panel"><div className="history-heading"><span className="eyebrow">ИСТОРИЯ РАЗРЕШЕНИЯ</span><span>{game?.history.length ?? 0} событий</span></div>{(game?.history ?? []).slice(-5).reverse().map((event, index) => <div className="history-event" key={`${event.type}-${index}`}><span className="history-dot" /><div><strong>{event.message}</strong>{event.data?.dice ? <small>Кубик: {String(event.data.dice)} · Результат: {String(event.data.score)} / {String(event.data.difficulty)}</small> : null}</div></div>)}</div>
         </section>
         <aside className={`side-panel task-panel ${handExpanded ? "hand-expanded" : "hand-collapsed"}`}><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task, index) => <button key={task.id} className={`task-card hand-card hand-card-${index} ${selectedTask === task.id ? "selected" : ""}`} onClick={() => { setSelectedTask(task.id); setHandExpanded(true); }}><img className="task-image" src={taskImages[task.id]} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Выберите карту, затем регион</small></button>)}</div><div className="hand-actions">{handExpanded && <button className="small-link" onClick={() => setHandExpanded(false)}>Свернуть руку</button>}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>

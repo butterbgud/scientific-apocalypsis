@@ -153,7 +153,10 @@ export function runBotTurn(state: GameState): Result {
 
 export function startNextRound(state: GameState): Result {
   if (state.phase !== "actions") return fail("The next round can only begin after all actions resolve.");
-  if (state.players.some((player) => player.sentThisRound < 2)) return fail("Both players must send two agents before the round ends.");
+  // The tutorial gives each side one starter agent. A full game can raise this
+  // requirement when recruitment is implemented, but the tutorial must be able
+  // to advance with its current one-agent setup.
+  if (state.players.some((player) => player.sentThisRound < 1)) return fail("Both players must complete their action before the round ends.");
   const regions = Object.fromEntries(Object.values(state.regions).map((region) => [region.id, { ...region, assignments: [] }]));
   const agents = Object.fromEntries(Object.values(state.agents).map((agent) => [agent.id, { ...agent, location: null }]));
   const players = state.players.map((player) => ({ ...player, sentThisRound: 0 }));
