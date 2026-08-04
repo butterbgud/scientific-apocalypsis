@@ -116,7 +116,7 @@ function App() {
     const botTurn = runBotTurn(resolved.state);
     if ("error" in botTurn) return setNotice(botTurn.error);
     setGame(botTurn.state);
-    setNotice(`${resolved.events[0].message} Бот завершил свой ход.`);
+    setNotice(`${resolved.events[0].message} Бот завершил свой ход. Задание завершено — нажмите «Следующий раунд».`);
     setSelectedTask(null);
     setZoomedTask(null);
   }
