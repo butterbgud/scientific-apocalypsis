@@ -85,6 +85,7 @@ function App() {
   const [game, setGame] = useState<GameState | null>(null);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [zoomedTask, setZoomedTask] = useState<string | null>(null);
+  const [agentZoomed, setAgentZoomed] = useState(false);
   const [trackersExpanded, setTrackersExpanded] = useState(false);
   const [notice, setNotice] = useState("Выберите задание, затем регион для агента.");
 
@@ -180,7 +181,7 @@ function App() {
           <h2>Мировое Антиправительство</h2>
           <div className="resources"><Resource icon={<Coins size={17} />} label="Капитал" value={player?.resources.capital ?? 0} /><Resource icon={<Users size={17} />} label="Связи" value={player?.resources.connections ?? 0} /><Resource icon={<Crown size={17} />} label="Авторитет" value={player?.resources.authority ?? 0} /></div>
           <div className="panel-heading agent-heading"><span>Агенты · {player?.agents.length ?? 0}/4</span><button className="small-link">+ нанять</button></div>
-          <article className="agent-card"><img src={activeAgent.image} alt="" /><div><strong>{activeAgent.name}</strong><span>{activeAgent.className}</span><small>{activeAgent.ability}</small></div></article>
+          <button className="agent-card" onClick={() => setAgentZoomed(true)} aria-label={`Просмотреть агента: ${activeAgent.name}`}><img src={activeAgent.image} alt="" /><div><strong>{activeAgent.name}</strong><span>{activeAgent.className}</span><small>{activeAgent.ability}</small></div></button>
           <div className="bot-mini"><img src={botImage} alt="" /><span className="bot-dot" /> {botName} <span className="muted">3 агента</span></div>
         </aside>
         <section className="board-center">
@@ -192,6 +193,7 @@ function App() {
         <aside className="side-panel task-panel hand-collapsed"><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task, index) => <button key={task.id} className={`task-card hand-card hand-card-${index} ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setZoomedTask(zoomedTask === task.id ? null : task.id)} aria-label={`Просмотреть карту: ${task.title}`}><img className="task-image" src={taskImages[task.id]} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Нажмите для просмотра</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
       </div>
       {zoomedTaskData && <div className="task-zoom-backdrop" role="dialog" aria-modal="true" aria-label={`Карта: ${zoomedTaskData.title}`}><div className="task-zoom-content"><button className="task-zoom-card" onClick={() => setZoomedTask(null)} aria-label="Закрыть просмотр карты"><img src={taskImages[zoomedTaskData.id]} alt={zoomedTaskData.title} /><div className="task-zoom-details"><div className="task-meta"><span className={`task-type type-${zoomedTaskData.deck}`}>{zoomedTaskData.deck}</span><span>{zoomedTaskData.cost} ◈</span></div><strong>{zoomedTaskData.title}</strong><span className="task-check">Проверка · {zoomedTaskData.difficulty}</span></div></button><button className="primary-button task-select-button" onClick={() => { setSelectedTask(zoomedTaskData.id); setZoomedTask(null); setNotice(`Выбрано задание: ${zoomedTaskData.title}. Теперь выберите регион.`); }}>Select</button></div></div>}
+      {agentZoomed && <div className="task-zoom-backdrop" role="dialog" aria-modal="true" aria-label={`Агент: ${activeAgent.name}`}><div className="task-zoom-content"><button className="task-zoom-card agent-zoom-card" onClick={() => setAgentZoomed(false)} aria-label="Закрыть просмотр агента"><img src={activeAgent.image} alt={activeAgent.name} /><div className="task-zoom-details"><strong>{activeAgent.name}</strong><span className="task-check">{activeAgent.className} · {activeAgent.characteristic}</span><small>{activeAgent.ability}</small></div></button></div></div>}
     </main>
   );
 }
