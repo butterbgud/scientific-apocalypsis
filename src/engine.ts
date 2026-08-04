@@ -30,6 +30,7 @@ export type Player = { id: string; name: string; resources: Record<Resource, num
 export type Event = { type: string; message: string; data?: Record<string, unknown> };
 
 export type GameState = {
+  tutorial: boolean;
   seed: number;
   phase: Phase;
   round: number;
@@ -75,7 +76,7 @@ function result(state: GameState, events: Event[]): Result {
 
 function fail(message: string): Result { return { error: message }; }
 
-export function setup(seed = 1, playerCount = 2): Result {
+export function setup(seed = 1, playerCount = 2, tutorial = false): Result {
   if (playerCount !== 2) return fail("MVP setup supports exactly two players.");
   const random = rng(seed);
   const ids = Array.from({ length: 3 }, () => fixtureTasks.map((task) => task.id)).flat().sort(() => random.next() - 0.5);
@@ -87,7 +88,12 @@ export function setup(seed = 1, playerCount = 2): Result {
     agents[id] = { ...starterAgent, id, name: index === 0 ? starterAgent.name : "Александр Окружной", ownerId: player.id };
     player.agents.push(id);
   }
-  return result({ seed: random.seed(), phase: "task_selection", round: 1, currentPlayerId: "player.0", tracks: { enlightenment: 0, social_progress: 0, natural_progress: 0, technical_progress: 0 }, players, agents, regions: Object.fromEntries(regions.map((name, index) => [`region.${index}`, { id: `region.${index}`, name, capacity: 2, assignments: [] }])), tasks: Object.fromEntries(fixtureTasks.map((task) => [task.id, task])), taskDeck: ids, taskChoices: [], assignments: [], history: [], outcome: null }, [{ type: "setup", message: "Two-player game initialized." }]);
+  if (tutorial) {
+    agents["agent.flamenko"] = { ...agents["agent.flamenko"], name: "Алексей Трёхкорочкин", classes: ["spiritual_leader"] };
+  }
+  const tutorialCards = ["task.connections.flat-earth", "task.capital.microwave", "task.capital.herbs"];
+  const tutorialDeck = [...tutorialCards, ...ids.filter((id) => !tutorialCards.includes(id))];
+  return result({ tutorial, seed: random.seed(), phase: "task_selection", round: 1, currentPlayerId: "player.0", tracks: { enlightenment: tutorial ? 7 : 0, social_progress: tutorial ? 4 : 0, natural_progress: tutorial ? 4 : 0, technical_progress: tutorial ? 4 : 0 }, players, agents, regions: Object.fromEntries(regions.map((name, index) => [`region.${index}`, { id: `region.${index}`, name, capacity: 2, assignments: [] }])), tasks: Object.fromEntries(fixtureTasks.map((task) => [task.id, task])), taskDeck: tutorial ? tutorialDeck : ids, taskChoices: [], assignments: [], history: [], outcome: null }, [{ type: "setup", message: tutorial ? "Tutorial match initialized from the rulebook setup." : "Two-player game initialized." }]);
 }
 
 export function drawTaskChoices(state: GameState): Result {

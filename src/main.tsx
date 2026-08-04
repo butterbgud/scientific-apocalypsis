@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, Coins, Crown, Dices, FlaskConical, Globe2, HeartP
 import { assignTask as engineAssignTask, drawTaskChoices, resolveTask, runBotTurn, setup, startNextRound, type GameState } from "./engine";
 import lobbyImage from "../assets/lobby.webp";
 import flamenkoImage from "../assets/cards/characters/flamenko.webp";
+import alexImage from "../assets/cards/characters/alex_t.webp";
 import okruzhnyyImage from "../assets/cards/characters/okruzhnyy.webp";
 import microwaveImage from "../assets/cards/capital/microwave.webp";
 import flatEarthImage from "../assets/cards/connections/flat_earth.webp";
@@ -48,6 +49,7 @@ const agents: Agent[] = [
 
 const botName = "Александр Окружной";
 const botImage = okruzhnyyImage;
+const tutorialAgent: Agent = { name: "Алексей Трёхкорочкин", className: "Духовный лидер", characteristic: "Воля", ability: "Обучающий стартовый агент.", image: alexImage };
 const taskImages: Record<string, string> = {
   "task.capital.microwave": microwaveImage,
   "task.connections.flat-earth": flatEarthImage,
@@ -84,17 +86,17 @@ function App() {
   const [handExpanded, setHandExpanded] = useState(false);
   const [notice, setNotice] = useState("Выберите задание, затем регион для агента.");
 
-  const activeAgent = agents[0];
+  const activeAgent = game?.tutorial ? tutorialAgent : agents[0];
   const selectedTaskData = useMemo(() => game ? game.tasks[selectedTask ?? ""] : undefined, [game, selectedTask]);
 
-  function startGame() {
-    const initialized = setup(42);
+  function startGame(tutorial = false) {
+    const initialized = setup(42, 2, tutorial);
     if ("error" in initialized) return setNotice(initialized.error);
     const drawn = drawTaskChoices(initialized.state);
     if ("error" in drawn) return setNotice(drawn.error);
     setGame(drawn.state);
     setScreen("board");
-    setNotice("Раунд 1 начинается. Выберите задание для Павла Фламинго.");
+    setNotice(tutorial ? "Обучающая партия. Откройте руку и выберите карту «Плоскоземельный сайт знакомств»." : "Раунд 1 начинается. Выберите задание для Павла Фламинго.");
   }
 
   function assignTask(index: number) {
@@ -144,7 +146,7 @@ function App() {
             </button>
           </div>
           <div className="seat-preview"><Users size={18} /><span>You</span><span className="seat-divider">vs</span><span>{botName}</span></div>
-          <button className="primary-button" onClick={startGame}>Начать прототип <ArrowRight size={18} /></button>
+          <div className="lobby-actions"><button className="primary-button" onClick={() => startGame(false)}>Начать прототип <ArrowRight size={18} /></button><button className="tutorial-button" onClick={() => startGame(true)}>Tutorial Match <BookOpen size={17} /></button></div>
           <p className="lobby-note">Версия прототипа · локальная игра · язык: {language}</p>
         </section>
       </main>
