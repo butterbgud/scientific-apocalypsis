@@ -83,11 +83,12 @@ function App() {
   const [language, setLanguage] = useState("Русский");
   const [game, setGame] = useState<GameState | null>(null);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
-  const [handExpanded, setHandExpanded] = useState(false);
+  const [zoomedTask, setZoomedTask] = useState<string | null>(null);
   const [notice, setNotice] = useState("Выберите задание, затем регион для агента.");
 
   const activeAgent = game?.tutorial ? tutorialAgent : agents[0];
   const selectedTaskData = useMemo(() => game ? game.tasks[selectedTask ?? ""] : undefined, [game, selectedTask]);
+  const zoomedTaskData = useMemo(() => game ? game.tasks[zoomedTask ?? ""] : undefined, [game, zoomedTask]);
 
   function startGame(tutorial = false) {
     const initialized = setup(42, 2, tutorial);
@@ -114,6 +115,7 @@ function App() {
     setGame(botTurn.state);
     setNotice(`${resolved.events[0].message} Бот завершил свой ход.`);
     setSelectedTask(null);
+    setZoomedTask(null);
   }
 
   function nextRound() {
@@ -178,8 +180,9 @@ function App() {
           <div className="board-footer"><div><span className="eyebrow">СОСТОЯНИЕ РАУНДА</span><p>{selectedTaskData ? `Выбрано: ${selectedTaskData.title}` : "Задание не выбрано"}</p></div><div className="footer-actions"><div className="disaster-chip"><HeartPulse size={16} /> Бедствий на карте: 0</div>{player && player.sentThisRound >= 1 && <button className="small-link next-round" onClick={nextRound}>Следующий раунд →</button>}</div></div>
           <div className="history-panel"><div className="history-heading"><span className="eyebrow">ИСТОРИЯ РАЗРЕШЕНИЯ</span><span>{game?.history.length ?? 0} событий</span></div>{(game?.history ?? []).slice(-5).reverse().map((event, index) => <div className="history-event" key={`${event.type}-${index}`}><span className="history-dot" /><div><strong>{event.message}</strong>{event.data?.dice ? <small>Кубик: {String(event.data.dice)} · Результат: {String(event.data.score)} / {String(event.data.difficulty)}</small> : null}</div></div>)}</div>
         </section>
-        <aside className={`side-panel task-panel ${handExpanded ? "hand-expanded" : "hand-collapsed"}`}><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task, index) => <button key={task.id} className={`task-card hand-card hand-card-${index} ${selectedTask === task.id ? "selected" : ""}`} onClick={() => { setSelectedTask(task.id); setHandExpanded(true); }}><img className="task-image" src={taskImages[task.id]} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Выберите карту, затем регион</small></button>)}</div><div className="hand-actions">{handExpanded && <button className="small-link" onClick={() => setHandExpanded(false)}>Свернуть руку</button>}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
+        <aside className="side-panel task-panel hand-collapsed"><div className="panel-heading"><span>Карты в руке · {boardTasks.length}</span><BookOpen size={17} /></div><div className="task-list">{boardTasks.map((task, index) => <button key={task.id} className={`task-card hand-card hand-card-${index} ${selectedTask === task.id ? "selected" : ""}`} onClick={() => setZoomedTask(zoomedTask === task.id ? null : task.id)} aria-label={`Просмотреть карту: ${task.title}`}><img className="task-image" src={taskImages[task.id]} alt="" /><div className="task-meta"><span className={`task-type type-${task.deck}`}>{task.deck}</span><span>{task.cost} ◈</span></div><strong>{task.title}</strong><span className="task-check">Проверка · {task.difficulty}</span><small>Нажмите для просмотра</small></button>)}</div><button className="secondary-button" onClick={() => setNotice("Фаза помощников: выберите агента, который уже выполняет задание.")}><Users size={16} /> Добавить помощника</button></aside>
       </div>
+      {zoomedTaskData && <div className="task-zoom-backdrop" role="dialog" aria-modal="true" aria-label={`Карта: ${zoomedTaskData.title}`}><div className="task-zoom-content"><button className="task-zoom-card" onClick={() => setZoomedTask(null)} aria-label="Закрыть просмотр карты"><img src={taskImages[zoomedTaskData.id]} alt={zoomedTaskData.title} /><div className="task-zoom-details"><div className="task-meta"><span className={`task-type type-${zoomedTaskData.deck}`}>{zoomedTaskData.deck}</span><span>{zoomedTaskData.cost} ◈</span></div><strong>{zoomedTaskData.title}</strong><span className="task-check">Проверка · {zoomedTaskData.difficulty}</span></div></button><button className="primary-button task-select-button" onClick={() => { setSelectedTask(zoomedTaskData.id); setZoomedTask(null); setNotice(`Выбрано задание: ${zoomedTaskData.title}. Теперь выберите регион.`); }}>Select</button></div></div>}
     </main>
   );
 }
