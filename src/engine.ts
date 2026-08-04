@@ -24,7 +24,7 @@ export type Agent = {
   injured: boolean;
 };
 
-export type Region = { id: string; name: string; capacity: number; assignments: string[] };
+export type Region = { id: string; name: string; capacity: number; assignments: string[]; disasters: string[] };
 export type Assignment = { taskId: string; agentId: string; helperIds: string[]; regionId: string; paid: number };
 export type Player = { id: string; name: string; resources: Record<Resource, number>; agents: string[]; hand: string[]; sentThisRound: number };
 export type Event = { type: string; message: string; data?: Record<string, unknown> };
@@ -93,7 +93,7 @@ export function setup(seed = 1, playerCount = 2, tutorial = false): Result {
   }
   const tutorialCards = ["task.connections.flat-earth", "task.capital.microwave", "task.capital.herbs"];
   const tutorialDeck = [...tutorialCards, ...ids.filter((id) => !tutorialCards.includes(id))];
-  return result({ tutorial, seed: random.seed(), phase: "task_selection", round: 1, currentPlayerId: "player.0", tracks: { enlightenment: tutorial ? 7 : 0, social_progress: tutorial ? 4 : 0, natural_progress: tutorial ? 4 : 0, technical_progress: tutorial ? 4 : 0 }, players, agents, regions: Object.fromEntries(regions.map((name, index) => [`region.${index}`, { id: `region.${index}`, name, capacity: 2, assignments: [] }])), tasks: Object.fromEntries(fixtureTasks.map((task) => [task.id, task])), taskDeck: tutorial ? tutorialDeck : ids, taskChoices: [], assignments: [], history: [], outcome: null }, [{ type: "setup", message: tutorial ? "Tutorial match initialized from the rulebook setup." : "Two-player game initialized." }]);
+  return result({ tutorial, seed: random.seed(), phase: "task_selection", round: 1, currentPlayerId: "player.0", tracks: { enlightenment: 4, social_progress: 4, natural_progress: 4, technical_progress: 4 }, players, agents, regions: Object.fromEntries(regions.map((name, index) => [`region.${index}`, { id: `region.${index}`, name, capacity: 2, assignments: [], disasters: tutorial && index === 2 ? ["Epidemic"] : [] }])), tasks: Object.fromEntries(fixtureTasks.map((task) => [task.id, task])), taskDeck: tutorial ? tutorialDeck : ids, taskChoices: [], assignments: [], history: [], outcome: null }, [{ type: "setup", message: tutorial ? "Tutorial match initialized from the rulebook setup." : "Two-player game initialized." }]);
 }
 
 export function drawTaskChoices(state: GameState): Result {
