@@ -139,15 +139,12 @@ function App() {
     return (
       <main className="lobby-shell" style={{ backgroundImage: `linear-gradient(135deg, rgba(17,20,24,.38), rgba(36,34,24,.44)), url(${lobbyImage})` }}>
         <section className="lobby-card">
-          <p className="lede">Мир ускоряется. Ваши агенты знают правду.</p>
           <div className="lobby-controls">
             <button className="language-button" onClick={() => setLanguage(language === "Русский" ? "English" : "Русский")}>
               {language === "Русский" ? "English" : "Русский"}
             </button>
           </div>
-          <div className="seat-preview"><Users size={18} /><span>You</span><span className="seat-divider">vs</span><span>{botName}</span></div>
           <div className="lobby-actions"><button className="primary-button" onClick={() => startGame(false)}>Начать прототип <ArrowRight size={18} /></button><button className="tutorial-button" onClick={() => startGame(true)}>Tutorial Match <BookOpen size={17} /></button></div>
-          <p className="lobby-note">Версия прототипа · локальная игра · язык: {language}</p>
         </section>
       </main>
     );
