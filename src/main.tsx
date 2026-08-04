@@ -85,6 +85,7 @@ function App() {
   const [game, setGame] = useState<GameState | null>(null);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [zoomedTask, setZoomedTask] = useState<string | null>(null);
+  const [trackersExpanded, setTrackersExpanded] = useState(false);
   const [notice, setNotice] = useState("Выберите задание, затем регион для агента.");
 
   const activeAgent = game?.tutorial ? tutorialAgent : agents[0];
@@ -133,6 +134,18 @@ function App() {
   const regions = game ? Object.values(game.regions) : initialRegions;
   const boardTasks = game ? game.taskChoices.map((id) => game.tasks[id]) : [];
   const tracks = game?.tracks ?? initialTracks;
+  const progress = {
+    enlightenment: tracks.enlightenment,
+    social: "social_progress" in tracks ? tracks.social_progress : tracks.social,
+    natural: "natural_progress" in tracks ? tracks.natural_progress : tracks.natural,
+    technical: "technical_progress" in tracks ? tracks.technical_progress : tracks.technical,
+  };
+  const trackerData = [
+    { key: "enlightenment", icon: <Globe2 size={16} />, label: "Просветление", value: progress.enlightenment, max: 12, tone: "light", events: [{ stage: 6, label: "Ватикан" }, { stage: 10, label: "Война" }] },
+    { key: "social_progress", icon: <Users size={16} />, label: "Социальный", value: progress.social, max: 13, tone: "social", events: [{ stage: 6, label: "Ватикан" }, { stage: 11, label: "Кризис" }] },
+    { key: "natural_progress", icon: <FlaskConical size={16} />, label: "Естественно-научный", value: progress.natural, max: 13, tone: "natural", events: [{ stage: 8, label: "Ватикан" }, { stage: 12, label: "Кризис" }] },
+    { key: "technical_progress", icon: <Dices size={16} />, label: "Технический", value: progress.technical, max: 13, tone: "technical", events: [{ stage: 10, label: "Ватикан" }, { stage: 12, label: "Война" }] },
+  ];
   const tutorialStep = selectedTask
     ? "Шаг 2 из 3 · Нажмите на регион, чтобы отправить агента."
     : player && player.sentThisRound > 0
@@ -156,11 +169,9 @@ function App() {
         <div><div className="eyebrow"><FlaskConical size={15} /> APOCALYPSIS</div><h1>Раунд {game?.round ?? 1} · Ход You</h1></div>
         <div className="header-actions"><span className="turn-pill"><Crown size={15} /> Первый игрок</span><button className="ghost-button" onClick={() => setScreen("lobby")}>Выйти</button></div>
       </header>
-      <section className="track-strip">
-        <Track icon={<Globe2 size={16} />} label="Просветление" value={tracks.enlightenment} max={12} tone="light" />
-        <Track icon={<Users size={16} />} label="Социальный" value={"social_progress" in tracks ? tracks.social_progress : tracks.social} max={13} tone="social" />
-        <Track icon={<FlaskConical size={16} />} label="Естественно-научный" value={"natural_progress" in tracks ? tracks.natural_progress : tracks.natural} max={13} tone="natural" />
-        <Track icon={<Dices size={16} />} label="Технический" value={"technical_progress" in tracks ? tracks.technical_progress : tracks.technical} max={13} tone="technical" />
+      <section className={`track-strip ${trackersExpanded ? "track-strip-expanded" : ""}`} aria-label="Треки прогресса">
+        {!trackersExpanded && <div className="track-collapsed">{trackerData.map((tracker) => <button key={tracker.key} className="track-summary" onClick={() => setTrackersExpanded(true)} aria-label={`Развернуть трек: ${tracker.label}`}><span>{tracker.icon}</span><b>{tracker.value}/{tracker.max}</b></button>)}</div>}
+        {trackersExpanded && <div className="track-expanded"><div className="track-expanded-heading"><span>Треки прогресса и события</span><button className="small-link" onClick={() => setTrackersExpanded(false)}>Свернуть</button></div>{trackerData.map((tracker) => <div className="expanded-track" key={tracker.key}><div className="expanded-track-label"><span>{tracker.icon} {tracker.label}</span><b>{tracker.value}/{tracker.max}</b></div><div className="expanded-track-line"><span className={`track-fill ${tracker.tone}`} style={{ width: `${(tracker.value / tracker.max) * 100}%` }} />{tracker.events.map((event) => <span key={`${tracker.key}-${event.stage}`} className={`event-marker event-${event.label.toLowerCase()}`} style={{ left: `${(event.stage / tracker.max) * 100}%` }} title={`${event.label}: ${event.stage}`}><i>{event.label === "Ватикан" ? "V" : event.label === "Война" ? "W" : "C"}</i></span>)}</div></div>)}</div>}
       </section>
       <div className="tutorial-bar"><span className="tutorial-label">ТУТОРИАЛ</span><span>{tutorialStep}</span></div>
       <div className="board-layout">
